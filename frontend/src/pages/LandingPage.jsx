@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShoppingBag, Truck, Shield, Star, ArrowRight, Leaf, Clock, Award, ChevronRight, Sparkles } from 'lucide-react';
+import { Zap, ArrowRight, Clock, Star, Shield, Truck, Package, CookingPot, Bath, Home } from 'lucide-react';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -9,208 +9,212 @@ export default function LandingPage() {
 
   useEffect(() => {
     setIsVisible(true);
+    // Auto-rotate features every 3 seconds
     const interval = setInterval(() => {
       setActiveFeature((prev) => (prev + 1) % 4);
     }, 3000);
     return () => clearInterval(interval);
   }, []);
 
+  // Features data with clean, minimalist style
   const features = [
     {
-      icon: <Leaf className="w-8 h-8" />,
-      title: "100% Organic",
-      description: "Farm-fresh organic produce delivered daily",
-      color: "from-green-400 to-emerald-600"
+      icon: <Zap className="w-8 h-8" />,
+      title: "Lightning Fast Delivery",
+      description: "Under 10 minutes, guaranteed speed and freshness.",
+      color: "text-purple-600 bg-purple-100", 
+      ring: "ring-purple-500/50"
     },
     {
       icon: <Truck className="w-8 h-8" />,
-      title: "Free Delivery",
-      description: "On orders above ₹50 - Same day delivery",
-      color: "from-blue-400 to-cyan-600"
+      title: "Zero Delivery Fee",
+      description: "Free delivery on orders above ₹100 - Always fast dispatch.",
+      color: "text-gray-900 bg-gray-200", 
+      ring: "ring-gray-700/50"
     },
     {
       icon: <Shield className="w-8 h-8" />,
-      title: "Secure Payment",
-      description: "100% secure transactions guaranteed",
-      color: "from-purple-400 to-pink-600"
+      title: "Secured Payments",
+      description: "100% secure, encrypted transactions guaranteed.",
+      color: "text-indigo-600 bg-indigo-100", 
+      ring: "ring-indigo-500/50"
     },
     {
-      icon: <Award className="w-8 h-8" />,
-      title: "Best Quality",
-      description: "Top-rated products from trusted sellers",
-      color: "from-orange-400 to-red-600"
+      icon: <Star className="w-8 h-8" />,
+      title: "Premium Quality",
+      description: "Handpicked, top-rated products from trusted brands.",
+      color: "text-yellow-600 bg-yellow-100", 
+      ring: "ring-yellow-500/50"
     }
   ];
 
   const categories = [
-    { name: "Vegetables", image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&h=400&fit=crop", items: "50+ items" },
-    { name: "Fruits", image: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400&h=400&fit=crop", items: "40+ items" },
-    { name: "Dairy", image: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400&h=400&fit=crop", items: "30+ items" },
-    { name: "Bakery", image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=400&fit=crop", items: "25+ items" },
-    { name: "Beverages", image: "https://images.unsplash.com/photo-1437418747212-8d9709afab22?w=400&h=400&fit=crop", items: "35+ items" },
-    { name: "Snacks", image: "https://images.unsplash.com/photo-1599490659213-e2b9527bd087?w=400&h=400&fit=crop", items: "45+ items" }
+    { name: "Grocery & Kitchen", icon: CookingPot },
+    { name: "Snacks & Drinks",icon: Zap },
+    { name: "Beauty & Personal Care",icon: Bath },
+    { name: "Household Essentials", icon: Home }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-green-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-        <div className="absolute top-40 right-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-32 left-1/2 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
-      </div>
-
-      {/* Hero Section */}
-      <div className="relative min-h-screen flex items-center justify-center px-4 py-20">
-        <div className="max-w-6xl mx-auto text-center">
-          {/* Logo Animation */}
-          <div className={`transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : '-translate-y-10 opacity-0'}`}>
-            <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-600 rounded-3xl mb-8 shadow-2xl transform hover:scale-110 transition-transform duration-300">
-              <ShoppingBag className="w-12 h-12 text-white" />
-            </div>
+    <div className="min-h-screen bg-white font-sans text-gray-900">
+      
+      {/* --- Header/Navbar --- */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
+        <div className="max-w-7xl mx-auto flex justify-between items-center py-4 px-6">
+          
+          {/* Logo (LiveMart) */}
+          <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/')}>
+            <Zap className="w-7 h-7 text-purple-600" />
+            <span className="text-2xl font-bold text-gray-900">
+              Live<span className="text-purple-600">Mart</span>
+            </span>
           </div>
 
-          {/* Main Heading */}
-          <h1 className={`text-6xl md:text-8xl font-black mb-6 transform transition-all duration-1000 delay-200 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 animate-gradient">
-              Fresh Groceries
-            </span>
-            <br />
-            <span className="text-gray-800">Delivered Daily</span>
-          </h1>
-
-          {/* Subtitle */}
-          <p className={`text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto transform transition-all duration-1000 delay-400 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            Get farm-fresh produce, organic items, and everyday essentials delivered to your doorstep. Shop from 10,000+ products with same-day delivery.
-          </p>
-
-          {/* CTA Buttons */}
-          <div className={`flex flex-col sm:flex-row gap-4 justify-center items-center transform transition-all duration-1000 delay-600 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+          {/* Navigation Links */}
+          <nav className="hidden md:flex items-center space-x-8 text-gray-600 font-medium">
+            <a href="#" className="hover:text-purple-600 transition-colors border-b-2 border-transparent hover:border-purple-600 pb-1">Home</a>
+            <a href="#categories" className="hover:text-purple-600 transition-colors border-b-2 border-transparent hover:border-purple-600 pb-1">Shop</a>
+            <a href="/login" className="hover:text-purple-600 transition-colors border-b-2 border-transparent hover:border-purple-600 pb-1">Sign In</a>
+            
+            {/* Contact/CTA Button (Theme: Purple) */}
             <button 
               onClick={() => navigate('/register')}
-              className="group relative px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-lg font-bold rounded-full overflow-hidden shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+              className="ml-4 px-5 py-2 bg-purple-600 text-white font-semibold rounded-full shadow-md hover:bg-purple-700 transition-colors flex items-center"
             >
-              <span className="relative z-10 flex items-center gap-2">
-                Get Started
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-green-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+             Sign up 
+              <ArrowRight className="w-4 h-4 ml-2" />
             </button>
+          </nav>
 
-            <button 
-              onClick={() => navigate('/login')}
-              className="group px-8 py-4 bg-white text-gray-800 text-lg font-bold rounded-full border-2 border-gray-300 hover:border-green-500 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-            >
-              <span className="flex items-center gap-2">
-                Sign In
-                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </span>
+          {/* Mobile Menu Icon (Placeholder) */}
+          <div className="md:hidden">
+            <button className="text-gray-600 p-2 border rounded-md hover:bg-gray-50">
+                {/* <Menu className="w-6 h-6" /> */}
             </button>
           </div>
+        </div>
+      </header>
 
-          {/* Trust Indicators */}
-          <div className={`mt-16 flex flex-wrap justify-center gap-8 text-gray-600 transform transition-all duration-1000 delay-800 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            <div className="flex items-center gap-2">
-              <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
-              <span className="font-semibold">4.8/5 Rating</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-green-500" />
-              <span className="font-semibold">50,000+ Happy Customers</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Clock className="w-5 h-5 text-blue-500" />
-              <span className="font-semibold">Same-Day Delivery</span>
-            </div>
-          </div>
+      {/* --- Section 1: Hero (Atmospheric Background) --- */}
+      {/* Wave SVG has been REMOVED */}
+      <div 
+        className="relative pt-24 min-h-[90vh] flex items-center justify-center bg-gray-900" 
+        style={{ 
+          backgroundImage: "url(https://images.unsplash.com/photo-1544198365-f5d60b6d61e4?q=80&w=1974&auto=format&fit=crop)",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center center',
+        }}
+      >
+        {/* Overlay to darken image and match theme */}
+        <div className="absolute inset-0 bg-gray-900/50 backdrop-brightness-75"></div>
+        
+        <div className="max-w-4xl mx-auto text-center z-10 py-20 px-4">
+          
+          {/* Main Headline (UPDATED CAPTION) */}
+          <h1 className={`text-5xl md:text-7xl font-extrabold text-white transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : '-translate-y-10 opacity-0'}`}>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-300">Instant</span> Delivery for Your Daily Needs
+          </h1>
+
+          {/* Subtitle (UPDATED CAPTION) */}
+          <p className={`mt-6 text-xl text-gray-200 max-w-lg mx-auto transform transition-all duration-1000 delay-200 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+            Groceries, snacks, and essentials delivered in under 10 minutes
+          </p>
+
+          {/* Minimalist CTA */}
+          <button 
+            onClick={() => navigate('/register')}
+            className={`mt-8 text-white font-semibold flex items-center mx-auto transition-all duration-300 hover:text-purple-400 transform transition-all duration-1000 delay-400 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+          >
+            Start Your First Order 
+            <ArrowRight className="w-5 h-5 ml-2" />
+          </button>
         </div>
       </div>
 
-      {/* Features Section */}
-      <div className="relative py-20 px-4 bg-white/50 backdrop-blur-sm">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-gray-800">
-            Why Choose <span className="text-green-600">LiveMart</span>?
+     
+
+      {/* --- Section 3: Features / Why Choose Us --- */}
+      <div id="features" className="relative py-20 px-6 bg-gray-50 border-t border-b border-gray-100">
+        <div className="max-w-7xl mx-auto">
+        
+          <h2 className="text-4xl font-extrabold text-center mb-12 text-gray-900">
+            Speed, Quality, and Reliability
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
               <div
                 key={index}
-                className={`group relative p-6 bg-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 cursor-pointer ${
-                  activeFeature === index ? 'ring-4 ring-green-400' : ''
-                }`}
+                className={`group relative p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer text-center 
+                  ${activeFeature === index ? `ring-4 ${feature.ring} scale-[1.03]` : 'scale-100 hover:scale-[1.01] border border-gray-100'}
+                `}
                 onMouseEnter={() => setActiveFeature(index)}
               >
-                <div className={`w-16 h-16 mb-4 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`w-14 h-14 mx-auto mb-4 rounded-xl flex items-center justify-center transition-all duration-300 ${feature.color} group-hover:shadow-lg`}>
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-bold mb-2 text-gray-800">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
-                <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity duration-300`}></div>
+                <h3 className="text-xl font-bold mb-2 text-gray-900">{feature.title}</h3>
+                <p className="text-gray-600 text-sm">{feature.description}</p>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-{/* Categories Section */}
-<div className="relative py-20 px-4">
-  <div className="max-w-6xl mx-auto">
-    <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 text-gray-800">
-      Shop by Category
-    </h2>
-    <p className="text-center text-gray-600 mb-16 text-lg">
-      Browse through our wide range of fresh categories
-    </p>
+      {/* --- Section 4: Categories (Shop) --- */}
+      <div id="categories" className="relative py-20 px-6 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl font-extrabold text-center mb-4 text-gray-900">
+            Shop By Category
+          </h2>
+          <p className="text-center text-gray-600 mb-16 text-lg max-w-2xl mx-auto">
+            Browse our core categories, always stocked and ready for immediate dispatch.
+          </p>
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-      {categories.map((category, index) => (
-        <div
-          key={index}
-          onClick={() => navigate(`/products?category=${category.name}`)}
-          className="cursor-pointer bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all hover:-translate-y-2"
-        >
-          <div className="h-64 w-full rounded-t-3xl overflow-hidden">
-            <img
-              src={category.image}
-              alt={category.name}
-              className="w-full h-full object-cover transform transition-transform duration-500 hover:scale-110"
-            />
-          </div>
-
-          <div className="p-6 text-center">
-            <h3 className="text-xl font-bold text-gray-800">{category.name}</h3>
-            <p className="text-sm text-gray-500 mt-1">{category.items}</p>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {categories.map((category, index) => (
+              <div
+                key={index}
+                onClick={() => navigate(`/products?category=${category.name}`)}
+                className="cursor-pointer bg-gray-50 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all hover:bg-gray-100 group border border-gray-100"
+              >
+                <div className="w-12 h-12 mb-3 rounded-full bg-purple-600 text-white flex items-center justify-center shadow-md group-hover:bg-gray-900 transition-colors">
+                  <category.icon className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900">{category.name}</h3>
+                <p className="text-sm text-gray-500 mt-1">{category.items}</p>
+                <div className="mt-3 flex items-center text-purple-600 font-semibold text-sm group-hover:text-gray-900 transition-colors">
+                    Shop Now
+                    <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      ))}
-    </div>
-  </div>
-</div>
+      </div>
 
-
-      {/* CTA Section */}
-      <div className="relative py-20 px-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Ready to Start Shopping?
+      {/* --- Section 5: Footer/Final CTA --- */}
+      <div className="relative py-20 px-6 bg-gray-900 text-white">
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-extrabold mb-6">
+            Ready for Instant Delivery?
           </h2>
-          <p className="text-xl mb-8 opacity-90">
-            Join thousands of satisfied customers and get your first order delivered today!
+          <p className="text-xl mb-10 opacity-80 font-light max-w-3xl mx-auto">
+            Experience the future of grocery shopping. Sign up and order today!
           </p>
           <button 
             onClick={() => navigate('/register')}
-            className="group px-10 py-5 bg-white text-green-600 text-xl font-bold rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300"
+            className="group px-10 py-5 bg-purple-600 text-white text-xl font-bold rounded-full shadow-2xl shadow-purple-500/50 hover:shadow-3xl transform hover:scale-105 transition-all duration-300"
           >
-            <span className="flex items-center gap-2 mx-auto justify-center">
-              Create Free Account
-              <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
+            <span className="flex items-center gap-3 mx-auto justify-center">
+              Create Account & Order Now
+              <Zap className="w-6 h-6 ml-2 group-hover:translate-x-1 transition-transform" />
             </span>
           </button>
         </div>
       </div>
 
+      {/* --- Custom Styles (Line drawing animation removed) --- */}
       <style jsx>{`
         @keyframes gradient {
           0%, 100% { background-position: 0% 50%; }
@@ -219,20 +223,6 @@ export default function LandingPage() {
         .animate-gradient {
           background-size: 200% 200%;
           animation: gradient 3s ease infinite;
-        }
-        @keyframes blob {
-          0%, 100% { transform: translate(0px, 0px) scale(1); }
-          33% { transform: translate(30px, -50px) scale(1.1); }
-          66% { transform: translate(-20px, 20px) scale(0.9); }
-        }
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        .animation-delay-4000 {
-          animation-delay: 4s;
         }
       `}</style>
     </div>
