@@ -8,22 +8,34 @@ export default function ProductCard({ product, currentUser, onEdit, onDelete }) 
   const { addToCart } = useCart();
   const { user } = useAuth(); 
 
-  // Use either parent-provided user or context user
   const activeUser = currentUser || user;
 
+  // Seller = can see Edit/Delete on their own products
   const isSeller = activeUser && 
     (activeUser.role === "retailer" || activeUser.role === "wholesaler");
 
+  // Customer can click product details
   const isClickable = !isSeller;
 
   const handleAddToCart = () => {
     if (product.stock > 0) {
-      addToCart(product);
+      addToCart(product);  // This is your wholesaleCart logic
     }
   };
 
-  const showCustomerCartButton =
-    isClickable && product.sellerRole === "retailer" && product.stock > 0;
+  // Retailer buying wholesaler product
+  const showRetailerBuyButton =
+    activeUser?.role === "retailer" &&
+    product?.sellerRole === "wholesaler";
+
+  // Retailer editing their own retailer products
+  const showRetailerEditDelete =
+    activeUser?.role === "retailer" &&
+    product?.sellerRole === "retailer";
+
+  // Wholesaler editing their products
+  const showWholesalerEditDelete =
+    activeUser?.role === "wholesaler";
 
   return (
     <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100 max-w-sm mx-auto transition-all duration-300 hover:shadow-2xl"> 
@@ -46,20 +58,12 @@ export default function ProductCard({ product, currentUser, onEdit, onDelete }) 
             />
           )}
 
-          {showCustomerCartButton && (
-            <button
-              onClick={handleAddToCart}
-              className="absolute bottom-4 right-4 p-3 rounded-full bg-purple-600 text-white shadow-xl hover:bg-purple-700 active:scale-95"
-            >
-              <ShoppingBag className="w-6 h-6" />
-            </button>
-          )}
-
-          {product.stock === 0 && isClickable && (
-            <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-              <span className="text-white text-lg font-bold">Out of Stock</span>
-            </div>
-          )}
+          {/* Product Image Wrapper */}
+{product.stock === 0 && isClickable && (
+  <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+    <span className="text-white text-lg font-bold">Out of Stock</span>
+  </div>
+)}
         </div>
       </div>
 
@@ -79,38 +83,59 @@ export default function ProductCard({ product, currentUser, onEdit, onDelete }) 
           )}
         </h3>
 
-        {/* 👇 SHOW EDIT + DELETE ONLY FOR WHOLESALER/RETAILER */}
-        {isSeller && (
-  <div className="flex gap-2 mt-3">
-    
-    {/* EDIT BUTTON – 50% WIDTH */}
-    <button
-      onClick={() => onEdit(product)}
-      className="
-        w-1/2 flex items-center justify-center gap-1 
-        text-sm px-3 py-1 
-        bg-blue-100 text-blue-700 rounded 
-        hover:bg-blue-200
-      "
-    >
-      <Pencil size={16} /> Edit
-    </button>
+        {/* -------------------- BUTTON SECTION -------------------- */}
+        <div className="mt-3">
 
-    {/* DELETE BUTTON – 50% WIDTH */}
-    <button
-      onClick={() => onDelete(product._id)}
-      className="
-        w-1/2 flex items-center justify-center gap-1 
-        text-sm px-3 py-1 
-        bg-red-100 text-red-700 rounded 
-        hover:bg-red-200
-      "
-    >
-      <Trash2 size={16} /> Delete
-    </button>
+          {/* BUY BUTTON — Retailer buying Wholesaler Product */}
+          {showRetailerBuyButton && (
+            <button
+              onClick={handleAddToCart}
+              className="
+                w-full flex items-center justify-center gap-1
+                text-sm px-3 py-2
+                bg-green-100 text-green-700 rounded
+                hover:bg-green-200
+              "
+            >
+              <ShoppingBag size={16} /> Buy
+            </button>
+          )}
 
-  </div>
-)}
+          {/* EDIT + DELETE — Retailer editing own products OR Wholesaler editing theirs */}
+          {(showRetailerEditDelete || showWholesalerEditDelete) && (
+            <div className="flex gap-2">
+              
+              {/* EDIT */}
+              <button
+                onClick={() => onEdit(product)}
+                className="
+                  w-1/2 flex items-center justify-center gap-1 
+                  text-sm px-3 py-1 
+                  bg-blue-100 text-blue-700 rounded 
+                  hover:bg-blue-200
+                "
+              >
+                <Pencil size={16} /> Edit
+              </button>
+
+              {/* DELETE */}
+              <button
+                onClick={() => onDelete(product._id)}
+                className="
+                  w-1/2 flex items-center justify-center gap-1 
+                  text-sm px-3 py-1 
+                  bg-red-100 text-red-700 rounded 
+                  hover:bg-red-200
+                "
+              >
+                <Trash2 size={16} /> Delete
+              </button>
+
+            </div>
+          )}
+
+        </div>
+        {/* -------------------------------------------------------- */}
 
       </div>
     </div>
