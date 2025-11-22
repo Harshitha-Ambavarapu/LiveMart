@@ -4,10 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ProductCard from '../components/common/ProductCard';
 import { useAuth } from '../context/AuthContext';
+import { useLocation } from "react-router-dom";
+
 
 const Home = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   
@@ -16,7 +20,7 @@ const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [sortBy, setSortBy] = useState('createdAt');
-
+  
   const [showSortPrice, setShowSortPrice] = useState(false);
 
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
@@ -39,6 +43,12 @@ const Home = () => {
   useEffect(() => {
     applyFilters();
   }, [products, searchTerm, selectedCategory, priceRange, sortBy]);
+ 
+  useEffect(() => {
+  const params = new URLSearchParams(location.search);
+  const term = params.get("search") || "";
+  setSearchTerm(term);
+}, [location.search]);
 
   const fetchProducts = async () => {
     try {
