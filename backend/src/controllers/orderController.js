@@ -1,34 +1,51 @@
+// backend/src/controllers/orderController.js
 const Order = require('../models/Order');
 const Product = require('../models/Product');
 const User = require('../models/User');
 const sendEmail = require('../utils/sendEmail');
 
 /* ============================================
-   CREATE ORDER
+   CREATE ORDER (Customer → Retailer)
 ============================================ */
 exports.createOrder = async (req, res) => {
   try {
-    const { items, paymentMethod, shippingAddress, deliveryAddress, scheduledDate, notes, subtotal, shippingCost, tax, totalAmount } = req.body;
+    const {
+      items,
+      paymentMethod,
+      shippingAddress,
+      deliveryAddress,
+      scheduledDate,
+      notes,
+      subtotal,
+      shippingCost,
+      tax,
+      totalAmount
+    } = req.body;
 
     if (!items || items.length === 0) {
       return res.status(400).json({ message: "No items in order" });
     }
 
     const orderItems = [];
-    let seller = null;
+
+    // ⭐ Get seller from FIRST product (always a retailer)
+    const firstProduct = await Product.findById(items[0].product);
+    if (!firstProduct) {
+      return res.status(404).json({ message: "Invalid product in order" });
+    }
+
+    const seller = firstProduct.seller; // ⭐ Retailer who owns first product
 
     // PROCESS EACH ITEM
     for (const item of items) {
       const product = await Product.findById(item.product);
-      if (!product) return res.status(404).json({ message: `Product ${item.product} not found` });
+      if (!product)
+        return res.status(404).json({ message: `Product ${item.product} not found` });
 
       if (product.stock < item.quantity) {
-        return res.status(400).json({ message: `Insufficient stock for ${product.name}. Available: ${product.stock}` });
-      }
-
-      // Set seller ONCE
-      if (!seller) {
-        seller = product.seller;  // Retailer who owns the product
+        return res.status(400).json({
+          message: `Insufficient stock for ${product.name}. Available: ${product.stock}`
+        });
       }
 
       orderItems.push({
@@ -36,18 +53,25 @@ exports.createOrder = async (req, res) => {
         name: product.name,
         price: product.price,
         quantity: item.quantity,
-        subtotal: product.price * item.quantity
+        subtotal: product.price * item.quantity,
+
+        // ⭐ REQUIRED for retailer dashboard
+        seller: product.seller,
+        sellerRole: product.sellerRole,
       });
 
-      // reduce stock
+      // Decrease stock
       product.stock -= item.quantity;
       await product.save();
     }
 
+    // Create final order
     const order = await Order.create({
       user: req.user._id,
       customer: req.user._id,
-      seller: seller,   // <-- IMPORTANT FIX
+
+      seller, // ⭐ Retailer who receives full order
+
       items: orderItems,
       shippingAddress: shippingAddress || deliveryAddress,
       deliveryAddress: deliveryAddress || shippingAddress,
@@ -58,6 +82,7 @@ exports.createOrder = async (req, res) => {
       totalAmount,
       scheduledDate,
       notes,
+
       trackingInfo: {
         currentStatus: "Order placed",
         updates: [
@@ -100,15 +125,22 @@ exports.getMyOrders = async (req, res) => {
 
 /* ============================================
    RETAILER — INCOMING ORDERS  
+   (Every order where ANY item belongs to retailer)
 ============================================ */
 exports.getIncomingOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ seller: req.user._id })
+    const orders = await Order.find({
+      "items.seller": req.user._id
+    })
       .populate("customer", "name email phone")
       .populate("items.product", "name images")
       .sort("-createdAt");
 
-    res.status(200).json({ success: true, count: orders.length, orders });
+    res.status(200).json({
+      success: true,
+      count: orders.length,
+      orders
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -165,7 +197,6 @@ exports.confirmOrder = async (req, res) => {
 
     await order.save();
 
-    // Email to customer
     await sendEmail(
       order.customer.email,
       "Your order has been confirmed",
@@ -199,7 +230,7 @@ exports.cancelOrder = async (req, res) => {
       return res.status(400).json({ message: "Cannot cancel delivered order" });
     }
 
-    // restore stock
+    // Restore stock
     for (const item of order.items) {
       const product = await Product.findById(item.product);
       if (product) {
@@ -226,8 +257,9 @@ exports.cancelOrder = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 /* ============================================
-   UPDATE ORDER STATUS  (Generic status updates)
+   UPDATE ORDER STATUS  
 ============================================ */
 exports.updateOrderStatus = async (req, res) => {
   try {
@@ -237,7 +269,6 @@ exports.updateOrderStatus = async (req, res) => {
 
     if (!order) return res.status(404).json({ message: "Order not found" });
 
-    // Only seller can update status
     if (order.seller.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Not authorized" });
     }
@@ -260,4 +291,3 @@ exports.updateOrderStatus = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-

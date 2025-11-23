@@ -22,7 +22,7 @@ export default function ProductCard({ product, currentUser, onEdit, onDelete }) 
       addToCart(product);  // This is your wholesaleCart logic
     }
   };
-
+ 
   // Retailer buying wholesaler product
   const showRetailerBuyButton =
     activeUser?.role === "retailer" &&

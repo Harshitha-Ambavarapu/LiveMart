@@ -4,6 +4,7 @@ import { ShoppingCart, User, LogOut, Package, Menu, X, Search, Heart, Zap } from
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { useWholesaleCart } from '../../context/WholesaleCartContext';
+import { LayoutDashboard } from "lucide-react";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -68,7 +69,29 @@ const Navbar = () => {
           </form>
 
           {/* ACTION BUTTONS */}
-          <div className="flex items-center space-x-4 flex-shrink-0">
+          {/* ACTION BUTTONS */}
+<div className="flex items-center space-x-4 flex-shrink-0">
+
+  {/* ⭐ DASHBOARD BUTTON (retailer + wholesaler only) */}
+  {user && (user.role === "retailer" || user.role === "wholesaler") && (
+    <button
+      onClick={() => navigate("/dashboard")}
+      className="hidden sm:block p-2 text-gray-300 hover:text-purple-400 transition"
+    >
+      <LayoutDashboard className="w-6 h-6" />
+    </button>
+  )}
+
+  {/* ⭐ WHOLESALE MARKET BUTTON (retailer only) */}
+  {user?.role === "retailer" && (
+    <button
+      onClick={() => navigate("/retailer/wholesale-market")}
+      className="hidden sm:block p-2 text-gray-300 hover:text-purple-400 transition"
+    >
+      <ShoppingCart className="w-6 h-6" />
+    </button>
+  )}
+
 
             {user && (
               <button
