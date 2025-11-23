@@ -34,8 +34,10 @@ const Home = () => {
     'Fruits',
     'Dairy',
     'Bakery',
-    'Beverages',
-    'Snacks'
+    'Cosmetics',
+    `HouseHold Essentials`,
+    'Snacks and Drinks',
+    `Electronics`,
   ];
 
   useEffect(() => {
