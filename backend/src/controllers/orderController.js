@@ -1,12 +1,15 @@
 // backend/src/controllers/orderController.js
+<<<<<<< HEAD
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+=======
+>>>>>>> e8089096818b18a795056ddfb9dfde77f4ece386
 const Order = require('../models/Order');
 const Product = require('../models/Product');
 const User = require('../models/User');
 const sendEmail = require('../utils/sendEmail');
 
 /* ============================================
-   CREATE ORDER
+   CREATE ORDER (Customer → Retailer)
 ============================================ */
 exports.createOrder = async (req, res) => {
   try {
@@ -20,7 +23,11 @@ exports.createOrder = async (req, res) => {
       subtotal,
       shippingCost,
       tax,
+<<<<<<< HEAD
       totalAmount,
+=======
+      totalAmount
+>>>>>>> e8089096818b18a795056ddfb9dfde77f4ece386
     } = req.body;
 
     if (!items || items.length === 0) {
@@ -28,18 +35,32 @@ exports.createOrder = async (req, res) => {
     }
 
     const orderItems = [];
-    let seller = null;
+
+    // ⭐ Get seller from FIRST product (always a retailer)
+    const firstProduct = await Product.findById(items[0].product);
+    if (!firstProduct) {
+      return res.status(404).json({ message: "Invalid product in order" });
+    }
+
+    const seller = firstProduct.seller; // ⭐ Retailer who owns first product
 
     for (const item of items) {
       const product = await Product.findById(item.product);
-      if (!product) return res.status(404).json({ message: `Product ${item.product} not found` });
+      if (!product)
+        return res.status(404).json({ message: `Product ${item.product} not found` });
 
       if (product.stock < item.quantity) {
+<<<<<<< HEAD
         return res.status(400).json({ message: `Insufficient stock for ${product.name}. Available: ${product.stock}` });
       }
 
       if (!seller) {
         seller = product.seller;
+=======
+        return res.status(400).json({
+          message: `Insufficient stock for ${product.name}. Available: ${product.stock}`
+        });
+>>>>>>> e8089096818b18a795056ddfb9dfde77f4ece386
       }
 
       orderItems.push({
@@ -48,12 +69,23 @@ exports.createOrder = async (req, res) => {
         price: product.price,
         quantity: item.quantity,
         subtotal: product.price * item.quantity,
+<<<<<<< HEAD
       });
 
+=======
+
+        // ⭐ REQUIRED for retailer dashboard
+        seller: product.seller,
+        sellerRole: product.sellerRole,
+      });
+
+      // Decrease stock
+>>>>>>> e8089096818b18a795056ddfb9dfde77f4ece386
       product.stock -= item.quantity;
       await product.save();
     }
 
+<<<<<<< HEAD
     const normalizedSubtotal = Number(subtotal) || orderItems.reduce((s, i) => s + i.subtotal, 0);
     const normalizedShipping = Number(shippingCost) || 0;
     const normalizedTax = Number(tax) || 0;
@@ -63,6 +95,15 @@ exports.createOrder = async (req, res) => {
       user: req.user._id,
       customer: req.user._id,
       seller: seller,
+=======
+    // Create final order
+    const order = await Order.create({
+      user: req.user._id,
+      customer: req.user._id,
+
+      seller, // ⭐ Retailer who receives full order
+
+>>>>>>> e8089096818b18a795056ddfb9dfde77f4ece386
       items: orderItems,
       shippingAddress: shippingAddress || deliveryAddress,
       deliveryAddress: deliveryAddress || shippingAddress,
@@ -73,6 +114,7 @@ exports.createOrder = async (req, res) => {
       totalAmount: normalizedTotal,
       scheduledDate,
       notes,
+
       trackingInfo: {
         currentStatus: "Order placed",
         updates: [
@@ -113,16 +155,27 @@ exports.getMyOrders = async (req, res) => {
 };
 
 /* ============================================
+<<<<<<< HEAD
    RETAILER — INCOMING ORDERS
+=======
+   RETAILER — INCOMING ORDERS  
+   (Every order where ANY item belongs to retailer)
+>>>>>>> e8089096818b18a795056ddfb9dfde77f4ece386
 ============================================ */
 exports.getIncomingOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ seller: req.user._id })
+    const orders = await Order.find({
+      "items.seller": req.user._id
+    })
       .populate("customer", "name email phone")
       .populate("items.product", "name images")
       .sort("-createdAt");
 
-    res.status(200).json({ success: true, count: orders.length, orders });
+    res.status(200).json({
+      success: true,
+      count: orders.length,
+      orders
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -212,6 +265,10 @@ exports.cancelOrder = async (req, res) => {
       return res.status(400).json({ message: "Cannot cancel delivered order" });
     }
 
+<<<<<<< HEAD
+=======
+    // Restore stock
+>>>>>>> e8089096818b18a795056ddfb9dfde77f4ece386
     for (const item of order.items) {
       const product = await Product.findById(item.product);
       if (product) {
@@ -239,7 +296,11 @@ exports.cancelOrder = async (req, res) => {
 };
 
 /* ============================================
+<<<<<<< HEAD
    UPDATE ORDER STATUS
+=======
+   UPDATE ORDER STATUS  
+>>>>>>> e8089096818b18a795056ddfb9dfde77f4ece386
 ============================================ */
 exports.updateOrderStatus = async (req, res) => {
   try {
@@ -270,6 +331,7 @@ exports.updateOrderStatus = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+<<<<<<< HEAD
 
 // ==========================================================
 // ⚡ STRIPE PAYMENT FUNCTIONS (UPDATED + CHECKOUT) ⚡
@@ -506,3 +568,5 @@ exports.handleStripeWebhook = async (req, res) => {
     res.status(200).json({ received: true, error: err.message });
   }
 };
+=======
+>>>>>>> e8089096818b18a795056ddfb9dfde77f4ece386

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, User, LogOut, Package, Menu, X, Search, Heart, Zap } from 'lucide-react';
+import { ShoppingCart, User, LogOut, Package, Menu, X, Search, Heart, Zap,Store } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { useWholesaleCart } from '../../context/WholesaleCartContext';
+import { LayoutDashboard } from "lucide-react";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -47,15 +48,37 @@ const Navbar = () => {
           <Link to="/" className="flex items-center space-x-2 flex-shrink-0 group">
             <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-600 to-purple-500 flex items-center justify-center">
               <Zap className="h-5 w-5 text-white" />
+
             </div>
 
             <span className="text-xl font-bold text-white">Live</span>
             <span className="text-xl font-bold text-purple-400">Mart</span>
           </Link>
 
-
           {/* ACTION BUTTONS */}
-          <div className="flex items-center space-x-4 flex-shrink-0">
+          {/* ACTION BUTTONS */}
+<div className="flex items-center space-x-4 flex-shrink-0">
+
+  {/* ⭐ DASHBOARD BUTTON (retailer + wholesaler only) */}
+  {user && (user.role === "retailer" || user.role === "wholesaler") && (
+    <button
+      onClick={() => navigate("/dashboard")}
+      className="hidden sm:block p-2 text-gray-300 hover:text-purple-400 transition"
+    >
+      <LayoutDashboard className="w-6 h-6" />
+    </button>
+  )}
+
+  {/* ⭐ WHOLESALE MARKET BUTTON (retailer only) */}
+  {user?.role === "retailer" && (
+    <button
+      onClick={() => navigate("/retailer/wholesale-market")}
+      className="hidden sm:block p-2 text-gray-300 hover:text-purple-400 transition"
+    >
+      <Store className="w-6 h-6" />
+    </button>
+  )}
+
 
             {user && (
               <button

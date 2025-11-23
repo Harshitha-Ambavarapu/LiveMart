@@ -5,36 +5,43 @@ const WholesaleCartContext = createContext();
 export const WholesaleCartProvider = ({ children }) => {
   const [wholesaleItems, setWholesaleItems] = useState([]);
 
-  // Add item with quantity & markup
-  const addItem = (product, quantity = 1, markup = 0) => {
-    setWholesaleItems((prev) => {
-      const existing = prev.find((p) => p._id === product._id);
+  // Add item to wholesale cart
+  const addWholesaleItem = (product, quantity = 1, markup = 0) => {
+    setWholesaleItems(prev => {
+      const existing = prev.find(item => item._id === product._id);
 
       if (existing) {
-        return prev.map((p) =>
-          p._id === product._id
-            ? { ...p, quantity: p.quantity + quantity, markup }
-            : p
+        return prev.map(item =>
+          item._id === product._id
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
         );
       }
-
-      return [...prev, { ...product, quantity, markup }];
+    
+      return [
+        ...prev,
+        {
+          ...product,
+          quantity,
+          markup,
+        },
+      ];
     });
   };
 
-  // remove item
+  // Remove item
   const removeItem = (id) => {
-    setWholesaleItems((prev) => prev.filter((p) => p._id !== id));
+    setWholesaleItems(prev => prev.filter(item => item._id !== id));
   };
 
-  // clear entire wholesale cart
+  // Clear cart
   const clearCart = () => setWholesaleItems([]);
 
   return (
     <WholesaleCartContext.Provider
       value={{
         wholesaleItems,
-        addItem,
+        addWholesaleItem,
         removeItem,
         clearCart,
       }}

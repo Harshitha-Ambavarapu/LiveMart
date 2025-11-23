@@ -18,11 +18,11 @@ export default function ProductCard({ product, currentUser, onEdit, onDelete }) 
   const isClickable = !isSeller;
 
   const handleAddToCart = () => {
-    if (product.stock > 0) {
+    if ((product?.stock ?? 0) > 0) {
       addToCart(product);  // This is your wholesaleCart logic
     }
   };
-
+ 
   // Retailer buying wholesaler product
   const showRetailerBuyButton =
     activeUser?.role === "retailer" &&
@@ -35,7 +35,8 @@ export default function ProductCard({ product, currentUser, onEdit, onDelete }) 
 
   // Wholesaler editing their products
   const showWholesalerEditDelete =
-    activeUser?.role === "wholesaler";
+    activeUser?.role === "wholesaler" &&
+    product?.sellerRole === "wholesaler";
 
   return (
     <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100 max-w-sm mx-auto transition-all duration-300 hover:shadow-2xl"> 
@@ -59,18 +60,18 @@ export default function ProductCard({ product, currentUser, onEdit, onDelete }) 
           )}
 
           {/* Product Image Wrapper */}
-{product.stock === 0 && isClickable && (
-  <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-    <span className="text-white text-lg font-bold">Out of Stock</span>
-  </div>
-)}
+          { (product?.stock ?? 0) === 0 && isClickable && (
+            <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+              <span className="text-white text-lg font-bold">Out of Stock</span>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Product Details */}
       <div className="p-4 space-y-2">
         <span className="text-2xl font-semibold text-gray-800">
-          ₹{product.price.toFixed(2)}
+          ₹{(product?.price ?? 0).toFixed(2)}
         </span>
 
         <h3 className="text-base text-gray-600 line-clamp-1">
