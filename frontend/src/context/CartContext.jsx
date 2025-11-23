@@ -41,13 +41,30 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const addToCart = async (productId, quantity = 1) => {
+  // --------------------------
+  // FIXED addToCart FUNCTION
+  // Supports:
+  //    addToCart(product)
+  //    addToCart(product._id)
+  // --------------------------
+  const addToCart = async (productOrId, quantity = 1) => {
     try {
+      const productId =
+        typeof productOrId === 'string'
+          ? productOrId
+          : productOrId?._id;
+
+      if (!productId) {
+        console.error("❌ addToCart: Invalid product or missing _id", productOrId);
+        return { success: false };
+      }
+
       const response = await axios.post(
         `${API_URL}/cart/add`,
         { productId, quantity },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }}
       );
+
       setCart(response.data.items);
       return { success: true };
     } catch (error) {

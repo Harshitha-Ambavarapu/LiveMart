@@ -3,13 +3,31 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ProductCard from "../components/common/ProductCard";
 import { useAuth } from "../context/AuthContext";
+import { WholesaleCartProvider, useWholesaleCart } from "../context/WholesaleCartContext";
+
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+
+/**
+ * Lightweight inner component that consumes WholesaleCartContext and
+ * renders the product grid, passing addToCart into ProductCard.
+ */
+function WholesaleProductGrid({ products }) {
+  const { addToCart } = useWholesaleCart();
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {products.map((product) => (
+        // Pass the wholesale addToCart as a prop so ProductCard will use it.
+        <ProductCard key={product._id} product={product} addToCart={addToCart} />
+      ))}
+    </div>
+  );
+}
 
 const WholesaleMarket = () => {
   const { user } = useAuth();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
 
   useEffect(() => {
     const fetchWholesaleProducts = async () => {
@@ -46,11 +64,10 @@ const WholesaleMarket = () => {
         ) : products.length === 0 ? (
           <p className="text-gray-600 text-lg">No wholesaler products available.</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {products.map((product) => (
-              <ProductCard key={product._id} product={product} />
-            ))}
-          </div>
+          // Wrap the grid in WholesaleCartProvider so addToCart is available via hook
+          <WholesaleCartProvider>
+            <WholesaleProductGrid products={products} />
+          </WholesaleCartProvider>
         )}
       </div>
     </div>
