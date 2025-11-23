@@ -184,7 +184,7 @@ export default function Product() {
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-        <Loader className="w-12 h-12 text-blue-600 animate-spin mb-4" />
+        <Loader className="w-12 h-12 text-purple-600 animate-spin mb-4" />
         <p className="text-gray-600 text-lg">Loading product details...</p>
       </div>
     );
@@ -194,7 +194,7 @@ export default function Product() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
         <p className="text-red-600 text-lg font-semibold mb-4">{error || 'Product not found'}</p>
-        <Link to="/" className="text-blue-600 hover:underline flex items-center gap-2">
+        <Link to="/" className="text-purple-600 hover:underline flex items-center gap-2">
           <ArrowLeft className="w-4 h-4" /> Back to Home
         </Link>
       </div>
@@ -205,7 +205,7 @@ export default function Product() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto px-4">
         {/* Back Button */}
-        <Link to="/" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 mb-6 font-medium">
+        <Link to="/" className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-800 mb-6 font-medium">
           <ArrowLeft className="w-4 h-4" /> Back to Products
         </Link>
 
@@ -223,7 +223,7 @@ export default function Product() {
             />
             <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center">
               <div className="bg-white rounded-full p-3 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
-                <ZoomIn className="w-8 h-8 text-blue-600" />
+                <ZoomIn className="w-8 h-8 text-purple-600" />
               </div>
             </div>
             <div className="absolute bottom-4 right-4 bg-black bg-opacity-50 text-white text-xs px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
@@ -249,8 +249,8 @@ export default function Product() {
             <p className="text-lg text-gray-700 mb-6 leading-relaxed">{product.description}</p>
 
             {/* Price */}
-            <div className="flex items-baseline gap-3 mb-6 bg-blue-50 p-4 rounded-lg">
-              <span className="text-4xl font-bold text-blue-600">₹{product.price}</span>
+            <div className="flex items-baseline gap-3 mb-6 bg-purple-50 p-4 rounded-lg">
+              <span className="text-4xl font-bold text-purple-600">₹{product.price}</span>
               <span className="text-gray-600 text-lg">/ {product.unit}</span>
             </div>
 
@@ -299,7 +299,7 @@ export default function Product() {
               className={`w-full py-4 rounded-lg font-bold text-lg flex items-center justify-center gap-3 transition-all ${
                 product.stock === 0 || addingToCart
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98] shadow-lg hover:shadow-xl'
+                  : 'bg-purple-600 text-white hover:bg-purple-700 active:scale-[0.98] shadow-lg hover:shadow-xl'
               }`}
             >
               <ShoppingCart className="w-6 h-6" />
@@ -309,17 +309,17 @@ export default function Product() {
         </div>
 
         {/* REVIEWS SECTION */}
-        <div className="bg-white rounded-lg shadow-lg p-8 border-t-4 border-blue-600">
+        <div className="bg-white rounded-lg shadow-lg p-8 border-t-4 border-purple-600">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
-              <MessageSquare className="w-8 h-8 text-blue-600" />
+              <MessageSquare className="w-8 h-8 text-purple-600" />
               Customer Reviews
             </h2>
             
             {user && canReview && !existingReview && (
               <button
                 onClick={() => setShowReviewForm(true)}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium shadow-md hover:shadow-lg transition-all"
+                className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium shadow-md hover:shadow-lg transition-all"
               >
                 Write a Review
               </button>
@@ -348,8 +348,8 @@ export default function Product() {
           {product.totalReviews > 0 && (
             <div className="mb-10 pb-8 border-b-2">
               <div className="flex items-center gap-12">
-                <div className="text-center bg-blue-50 p-6 rounded-lg">
-                  <div className="text-6xl font-bold text-blue-600 mb-3">
+                <div className="text-center bg-purple-50 p-6 rounded-lg">
+                  <div className="text-6xl font-bold text-purple-600 mb-3">
                     {product.averageRating}
                   </div>
                   <StarRating rating={product.averageRating} size="lg" />
@@ -372,7 +372,7 @@ export default function Product() {
                           key={star}
                           onClick={() => handleFilterChange(star)}
                           className={`flex items-center gap-3 w-full hover:bg-gray-50 p-3 rounded-lg transition-colors ${
-                            filterRating === star ? 'bg-blue-50 ring-2 ring-blue-300' : ''
+                            filterRating === star ? 'bg-purple-50 ring-2 ring-purple-300' : ''
                           }`}
                         >
                           <span className="text-sm font-semibold w-12">{star} ★</span>
@@ -394,13 +394,13 @@ export default function Product() {
 
           {/* Filter Message */}
           {filterRating && (
-            <div className="mb-6 flex items-center justify-between bg-blue-50 p-4 rounded-lg border border-blue-200">
-              <p className="text-sm text-blue-800 font-medium">
+            <div className="mb-6 flex items-center justify-between bg-purple-50 p-4 rounded-lg border border-purple-200">
+              <p className="text-sm text-purple-800 font-medium">
                 Showing {filterRating}-star reviews only
               </p>
               <button
                 onClick={() => handleFilterChange(null)}
-                className="text-sm text-blue-600 hover:text-blue-800 font-semibold underline"
+                className="text-sm text-purple-600 hover:text-purple-800 font-semibold underline"
               >
                 Clear filter
               </button>

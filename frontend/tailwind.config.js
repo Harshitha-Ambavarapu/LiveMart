@@ -15,9 +15,22 @@ module.exports = {
           700: '#047857',
         },
         secondary: {
-          DEFAULT: '#3B82F6',
-          600: '#2563EB',
-          700: '#1D4ED8',
+          DEFAULT: '#7C3AED', // main purple
+          50:  '#F5F3FF',
+          100: '#EEE7FF',
+          200: '#DDD0FF',
+          300: '#C7B0FF',
+          400: '#A881FF',
+          500: '#7C3AED', //  same as DEFAULT
+          600: '#6D28D9',
+          700: '#5B21B6',
+          800: '#4C1A9A',
+          900: '#32166F',
+        },
+        primaryPurple: {
+          DEFAULT: '#7C3AED',
+          600: '#6D28D9',
+          700: '#5B21B6',
         },
         success: '#10B981',
         warning: '#F59E0B',

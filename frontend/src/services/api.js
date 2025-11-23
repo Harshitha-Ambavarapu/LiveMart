@@ -1,17 +1,15 @@
 import axios from 'axios';
 
 // Base URL for backend
-const API_BASE_URL = 'http://localhost:4000/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000/api';
 
-// Create axios instance
+// Axios instance
 const api = axios.create({
   baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' }
 });
 
-// Add token to requests if available
+// Attach token automatically
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -20,16 +18,29 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// API methods
+// -------------- AUTH API ------------------
 export const authAPI = {
-  register: (userData) => api.post('/auth/register', userData),
-  login: (credentials) => api.post('/auth/login', credentials),
+  register: (data) => api.post('/auth/register', data),
+  login: (data) => api.post('/auth/login', data),
 };
 
+// -------------- PRODUCT API ------------------
 export const productAPI = {
   getAll: () => api.get('/products'),
   getById: (id) => api.get(`/products/${id}`),
   search: (query) => api.get(`/products/search?q=${query}`),
+};
+
+// -------------- ORDER + PAYMENT API ------------------
+export const orderAPI = {
+  // Create new order
+  createOrder: (orderData) => api.post('/orders', orderData),
+
+  // Stripe Payment Intent
+  createPaymentIntent: (orderId) => api.post(`/orders/${orderId}/paymentIntent`),
+
+  // Hosted Stripe Checkout
+  createCheckoutSession: (orderId) => api.post(`/orders/${orderId}/create-checkout-session`),
 };
 
 export default api;

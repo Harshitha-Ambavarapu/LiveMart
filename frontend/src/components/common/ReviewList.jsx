@@ -57,7 +57,7 @@ export default function ReviewList({ reviews, onHelpful }) {
           {user && (
             <button
               onClick={() => onHelpful(review._id)}
-              className="flex items-center gap-1 text-sm text-gray-600 hover:text-blue-600 transition-colors"
+              className="flex items-center gap-1 text-sm text-gray-600 hover:text-purple-600 transition-colors"
             >
               <ThumbsUp className="w-4 h-4" />
               <span>Helpful ({review.helpful || 0})</span>

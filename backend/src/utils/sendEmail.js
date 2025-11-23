@@ -16,6 +16,10 @@ async function createTransporter() {
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS
+    },
+    // ⬇️ FIX: Prevent TLS “self-signed certificate” error during local development
+    tls: {
+      rejectUnauthorized: false
     }
   });
 }
@@ -28,19 +32,24 @@ async function createTransporter() {
  * - html: html body (optional)
  */
 async function sendEmail(to, subject, text, html) {
-  const transporter = await createTransporter();
-  const from = process.env.EMAIL_FROM || process.env.SMTP_USER;
+  try {
+    const transporter = await createTransporter();
+    const from = process.env.EMAIL_FROM || process.env.SMTP_USER;
 
-  const info = await transporter.sendMail({
-    from,
-    to,
-    subject,
-    text,
-    html
-  });
+    const info = await transporter.sendMail({
+      from,
+      to,
+      subject,
+      text,
+      html
+    });
 
-  // nodemailer returns messageId; good to log
-  return info;
+    console.log('Email sent:', info.messageId);
+    return info;
+  } catch (err) {
+    console.error('Email send error:', err);
+    throw new Error('Failed to send email: ' + err.message);
+  }
 }
 
 module.exports = sendEmail;

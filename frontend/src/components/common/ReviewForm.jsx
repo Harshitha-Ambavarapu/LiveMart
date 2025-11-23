@@ -174,7 +174,7 @@ export default function ReviewForm({ productId, onSuccess, onCancel, existingRev
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Summarize your experience"
               maxLength={100}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
           </div>
 
@@ -191,7 +191,7 @@ export default function ReviewForm({ productId, onSuccess, onCancel, existingRev
               maxLength={1000}
               rows={5}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
             />
             <p className="text-xs text-gray-500 mt-1">
               {comment.length}/1000 characters
@@ -256,7 +256,7 @@ export default function ReviewForm({ productId, onSuccess, onCancel, existingRev
 
             {/* Upload Button */}
             {(existingImages.length + newImagePreviews.length) < 5 && (
-              <label className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-colors">
+              <label className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-purple-500 hover:bg-purple-50 transition-colors">
                 <Upload className="w-5 h-5 text-gray-400" />
                 <span className="text-sm text-gray-600">
                   Upload Photos ({existingImages.length + newImagePreviews.length}/5)
@@ -288,7 +288,7 @@ export default function ReviewForm({ productId, onSuccess, onCancel, existingRev
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Submitting...' : existingReview ? 'Update Review' : 'Submit Review'}
             </button>
