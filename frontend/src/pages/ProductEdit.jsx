@@ -20,7 +20,7 @@ const ProductEdit = () => {
     price: "",
     stock: "",
     description: "",
-    category: "",
+    category: "Groceries",
     unit: "kg",
     isLocal: false,
     localRegion: "",
@@ -35,19 +35,32 @@ const ProductEdit = () => {
       setForm({
         ...product,
         tags: product.tags?.join(", ") || "",
+        category: product.category || "Groceries",
+        unit: product.unit || "kg",
       });
       setImagePreview(product.images?.[0] || "");
       setLoading(false);
+    } else if (id) {
+      axios
+        .get(`${API_URL}/products/${id}`)
+        .then((res) => {
+          const p = res.data.product;
+          setForm({
+            ...p,
+            tags: p.tags?.join(", ") || "",
+            category: p.category || "Groceries",
+            unit: p.unit || "kg",
+          });
+          setImagePreview(p.images?.[0] || "");
+        })
+        .catch((err) => {
+          console.error(err);
+          setError("Failed to load product.");
+        })
+        .finally(() => setLoading(false));
     } else {
-      axios.get(`${API_URL}/products/${id}`).then((res) => {
-        const p = res.data.product;
-        setForm({
-          ...p,
-          tags: p.tags?.join(", ") || "",
-        });
-        setImagePreview(p.images?.[0] || "");
-        setLoading(false);
-      });
+      // no id - adding new product
+      setLoading(false);
     }
   }, [id, location.state]);
 
@@ -78,23 +91,30 @@ const ProductEdit = () => {
     try {
       const token = localStorage.getItem("token");
 
-      const updatedData = {
+      const payload = {
         ...form,
-        price: Number(form.price),
-        stock: Number(form.stock),
+        price: Number(form.price || 0),
+        stock: Number(form.stock || 0),
         tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean),
-        images: [imagePreview], // uploading base64 or old URL
+        images: imagePreview ? [imagePreview] : [],
       };
 
-      await axios.put(`${API_URL}/products/${id}`, updatedData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      if (id) {
+        await axios.put(`${API_URL}/products/${id}`, payload, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        alert("Product updated successfully!");
+      } else {
+        await axios.post(`${API_URL}/products`, payload, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        alert("Product added successfully!");
+      }
 
-      alert("Product updated successfully!");
-      navigate("/");
+      navigate("/"); // or navigate back to products list
     } catch (err) {
-      console.error("Edit error:", err);
-      setError(err.response?.data?.message || "Update failed.");
+      console.error("Save error:", err);
+      setError(err.response?.data?.message || "Save failed.");
     }
   };
 
@@ -103,127 +123,170 @@ const ProductEdit = () => {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-6 mt-10 bg-white shadow rounded">
-      <button
-        onClick={() => navigate("/")}
-        className="flex items-center text-blue-600 hover:text-blue-800 mb-4"
-      >
-        <ArrowLeft className="w-5 h-5 mr-2" /> Back
-      </button>
+    <div className="max-w-3xl mx-auto mt-10">
+      <div className="rounded-2xl bg-white shadow-xl overflow-hidden">
+        {/* top purple accent */}
+        <div className="h-2 bg-gradient-to-r from-purple-400 to-purple-600" />
 
-      <h2 className="text-3xl font-bold mb-4">Edit Product</h2>
+        <div className="p-8">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center text-purple-600 hover:text-purple-800 mb-4"
+          >
+            <ArrowLeft className="w-5 h-5 mr-2" /> Back
+          </button>
 
-      {error && (
-        <div className="bg-red-100 text-red-700 p-3 rounded mb-4">
-          {error}
+          <h2 className="text-3xl font-extrabold mb-6">
+            {id ? "Edit Product" : "Add New Product"}
+          </h2>
+
+          {error && (
+            <div className="bg-red-50 text-red-700 p-3 rounded mb-4">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Row 1: Name + Description */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Product Name *</label>
+                <input
+                  name="name"
+                  placeholder="Enter Product name"
+                  value={form.name}
+                  onChange={handleChange}
+                  className="w-full border border-purple-100 bg-white px-4 py-3 rounded-xl placeholder: text-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-200"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Description *</label>
+                <input
+                  name="description"
+                  placeholder="Short description"
+                  value={form.description}
+                  onChange={handleChange}
+                  className="w-full border border-purple-100 bg-white px-4 py-3 rounded-xl placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-200"
+                />
+              </div>
+            </div>
+
+            {/* Row 2: Category + Unit */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Category *</label>
+                <select
+                  name="category"
+                  value={form.category}
+                  onChange={handleChange}
+                  className="w-full border border-purple-100 px-4 py-3 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-purple-200"
+                >
+                  <option>Groceries</option>
+                  <option>Vegetables</option>
+                  <option>Fruits</option>
+                  <option>Dairy</option>
+                  <option>Others</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Unit *</label>
+                <select
+                  name="unit"
+                  value={form.unit}
+                  onChange={handleChange}
+                  className="w-full border border-purple-100 px-4 py-3 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-purple-200"
+                >
+                  <option value="kg">kg</option>
+                  <option value="g">g</option>
+                  <option value="ltr">ltr</option>
+                  <option value="pcs">pcs</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Row 3: Price + Stock */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Price (₹)</label>
+                <input
+                  name="price"
+                  type="number"
+                  placeholder=""
+                  value={form.price}
+                  onChange={handleChange}
+                  className="w-full border border-purple-100 px-4 py-3 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-purple-200"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Stock</label>
+                <input
+                  name="stock"
+                  type="number"
+                  value={form.stock}
+                  onChange={handleChange}
+                  className="w-full border border-purple-100 px-4 py-3 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-purple-200"
+                />
+              </div>
+            </div>
+
+            {/* Image upload */}
+            <div className="flex items-center gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Product Image</label>
+                <div className="flex items-center gap-3">
+                  <label className="flex items-center bg-white border border-purple-100 rounded-xl px-4 py-2 cursor-pointer hover:bg-purple-50">
+                    <Upload className="w-4 h-4 mr-2 text-purple-600" />
+                    <span className="text-sm font-medium">Select</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="hidden"
+                    />
+                  </label>
+
+                  <div className="w-20 h-20 rounded-lg border border-gray-100 bg-gray-50 flex items-center justify-center text-gray-400">
+                    {imagePreview ? (
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                    ) : (
+                      <span className="text-xs">No image</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div className="flex items-center justify-between gap-4">
+              <button
+                type="submit"
+                className="flex-1 inline-flex items-center justify-center gap-3 px-6 py-3 rounded-full text-white text-lg font-semibold shadow-md
+                           bg-gradient-to-r from-purple-500 to-purple-400 hover:from-purple-600 hover:to-purple-500"
+              >
+                <span className="text-2xl leading-none">+</span>
+                <span>{id ? "Save Changes" : "Add Product"}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="px-6 py-3 rounded-full border border-gray-200 bg-white text-gray-700"
+              >
+                Cancel
+              </button>
+            </div>
+
+            <p className="text-xs text-gray-400 mt-1">Fields marked * are required</p>
+          </form>
         </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Name */}
-        <div>
-          <label className="block font-medium mb-1">Product Name</label>
-          <input
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            className="w-full border p-3 rounded"
-          />
-        </div>
-
-        {/* Price + Stock */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block font-medium mb-1">Price (₹)</label>
-            <input
-              name="price"
-              value={form.price}
-              onChange={handleChange}
-              type="number"
-              className="w-full border p-3 rounded"
-            />
-          </div>
-
-          <div>
-            <label className="block font-medium mb-1">Stock</label>
-            <input
-              name="stock"
-              value={form.stock}
-              onChange={handleChange}
-              type="number"
-              className="w-full border p-3 rounded"
-            />
-          </div>
-        </div>
-
-        {/* Category */}
-        <div>
-          <label className="block font-medium mb-1">Category</label>
-          <input
-            name="category"
-            value={form.category}
-            onChange={handleChange}
-            className="w-full border p-3 rounded"
-          />
-        </div>
-
-        {/* Description */}
-        <div>
-          <label className="block font-medium mb-1">Description</label>
-          <textarea
-            name="description"
-            rows="3"
-            value={form.description}
-            onChange={handleChange}
-            className="w-full border p-3 rounded"
-          />
-        </div>
-
-        {/* Tags */}
-        <div>
-          <label className="block font-medium mb-1">Tags (comma separated)</label>
-          <input
-            name="tags"
-            value={form.tags}
-            onChange={handleChange}
-            className="w-full border p-3 rounded"
-          />
-        </div>
-
-        {/* Image Upload */}
-        <div>
-          <label className="block font-medium mb-2">Product Image</label>
-
-          <div className="flex items-center gap-4">
-            <label className="flex items-center px-4 py-2 border rounded cursor-pointer hover:bg-gray-50">
-              <Upload className="w-5 h-5 mr-2" />
-              Change Image
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="hidden"
-              />
-            </label>
-
-            {imagePreview && (
-              <img
-                src={imagePreview}
-                alt="Preview"
-                className="w-20 h-20 object-cover rounded border"
-              />
-            )}
-          </div>
-        </div>
-
-        {/* Save */}
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white p-3 rounded hover:bg-blue-700 text-lg font-semibold"
-        >
-          Save Changes
-        </button>
-      </form>
+      </div>
     </div>
   );
 };
