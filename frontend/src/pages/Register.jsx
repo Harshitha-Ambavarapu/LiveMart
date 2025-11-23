@@ -343,7 +343,23 @@ const Register = () => {
                     </div>
                   </div>
                 )}
-
+{/* Google Sign-In Button (direct inline version) */}
+<div className="mt-6 flex items-center justify-center">
+  <button
+    type="button"
+    onClick={() => window.location.href = "http://localhost:4000/api/auth/google"}
+    className="flex items-center gap-3 px-20 py-4 rounded-md border border-gray-300 shadow-sm bg-white hover:bg-gray-50"
+  >
+    <img
+      src="https://developers.google.com/identity/images/g-logo.png"
+      alt="Google"
+      className="w-5 h-5"
+    />
+    <span className="text-lg font-bold text-gray-700">
+      Sign in with Google
+    </span>
+  </button>
+</div>
                 {/* SUBMIT BUTTON */}
                 <button
                   type="submit"

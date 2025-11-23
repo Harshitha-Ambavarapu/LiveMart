@@ -33,7 +33,7 @@ const Orders = () => {
       case 'processing':
         return <Clock className="w-5 h-5 text-yellow-500" />;
       case 'confirmed':
-        return <Package className="w-5 h-5 text-blue-500" />;
+        return <Package className="w-5 h-5 text-purple-500" />;
       case 'shipped':
         return <Truck className="w-5 h-5 text-purple-500" />;
       case 'delivered':
@@ -51,7 +51,7 @@ const Orders = () => {
       case 'processing':
         return 'bg-yellow-100 text-yellow-800';
       case 'confirmed':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-purple-100 text-purple-800';
       case 'shipped':
         return 'bg-purple-100 text-purple-800';
       case 'delivered':
@@ -79,7 +79,7 @@ const Orders = () => {
         <p className="text-gray-600 mb-6">Start shopping to see your orders here!</p>
         <button
           onClick={() => navigate('/')}
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+          className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700"
         >
           Browse Products
         </button>
@@ -132,11 +132,11 @@ const Orders = () => {
               <div className="border-t pt-4 flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Total Amount</p>
-                  <p className="text-2xl font-bold text-blue-600">₹{order.totalAmount.toFixed(2)}</p>
+                  <p className="text-2xl font-bold text-purple-600">₹{order.totalAmount.toFixed(2)}</p>
                 </div>
                 <button
                   onClick={() => navigate(`/order-confirmation/${order._id}`)}
-                  className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                  className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
                 >
                   <Eye className="w-4 h-4" />
                   View Details

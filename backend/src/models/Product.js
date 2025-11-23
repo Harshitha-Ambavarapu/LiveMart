@@ -19,13 +19,9 @@ const productSchema = new mongoose.Schema({
       'Fruits', 
       'Dairy', 
       'Bakery', 
-      'Beverages', 
-      'Snacks',
+      'Snacks and drinks',
       'Personal Care',
       'Household',
-      'Electronics',
-      'Clothing',
-      'Other'
     ]
   },
   price: {
