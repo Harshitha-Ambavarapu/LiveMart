@@ -38,8 +38,34 @@ export default function ProductCard({ product, currentUser, onEdit, onDelete }) 
     activeUser?.role === "wholesaler" &&
     product?.sellerRole === "wholesaler";
 
+  // === Badge logic ===
+  // Try common fields: product.sellerRole, fallback to product.addedBy?.role
+  const sellerRole = product?.sellerRole || product?.addedBy?.role || null;
+  const roleLabel =
+    sellerRole === "wholesaler" ? "Wholesaler" :
+    sellerRole === "retailer" ? "Retailer" : null;
+
+  const badgeClass =
+    sellerRole === "wholesaler"
+      ? "bg-purple-600 text-white"    // wholesaler: purple
+      : sellerRole === "retailer"
+      ? "bg-gray-800 text-white"      // retailer: dark/black
+      : "bg-gray-400 text-white";     // unknown: grey
+
   return (
-    <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100 max-w-sm mx-auto transition-all duration-300 hover:shadow-2xl"> 
+    // make the card relative so the badge can be absolutely positioned
+    <div className="relative bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100 max-w-sm mx-auto transition-all duration-300 hover:shadow-2xl"> 
+
+      {/* ===== Badge (top-right) ===== */}
+      {roleLabel && (
+        <span
+          className={`absolute top-3 right-3 z-10 px-3 py-1 text-xs font-semibold rounded-full ${badgeClass} shadow-sm`}
+          title={roleLabel}
+        >
+          {roleLabel}
+        </span>
+      )}
+
       <div className="relative">
         <div className="w-full aspect-square bg-white flex items-center justify-center relative">
 
