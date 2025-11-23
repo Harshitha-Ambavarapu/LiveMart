@@ -1,9 +1,9 @@
 // frontend/src/pages/Checkout.jsx
 import React, { useState } from 'react';
+import { loadStripe } from "@stripe/stripe-js";
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext'; // Assuming correct relative path
 import { orderAPI } from '../services/api'; // Assuming correct relative path
-import { loadStripe } from '@stripe/stripe-js';
 import { Elements, useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 
 // Use the env var (create frontend/.env with REACT_APP_STRIPE_PUBLISHABLE_KEY)
